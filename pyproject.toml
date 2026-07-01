@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "freemesh-rl-repro"
+version = "0.1.0"
+description = "Level 2 local reproduction scaffold for FreeMesh-RL quadrilateral mesh generation."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "FreeMesh-RL reproduction maintainers" }]
+dependencies = [
+  "gymnasium>=0.29",
+  "matplotlib>=3.7",
+  "numpy>=1.24",
+  "pyyaml>=6.0",
+  "shapely>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+rl = [
+  "stable-baselines3>=2.3.0",
+  "torch>=2.2",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -9,6 +9,8 @@ tensorboard/
 wandb/
 outputs/raw/
 references/papers/*.pdf
+references/papers/*-zh/
+tmp/
 *.pt
 *.pth
 *.zip

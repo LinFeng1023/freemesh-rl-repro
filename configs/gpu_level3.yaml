@@ -1,0 +1,20 @@
+seed: 356
+total_timesteps: 1200000
+eval_every_steps: 10000
+eval_episodes: 10
+max_steps: 512
+data:
+  train_manifest: data/train/manifest.json
+  eval_manifest: data/eval_large/manifest.json
+training:
+  algorithm: SAC
+  learning_rate: 0.0003
+  buffer_size: 1000000
+  batch_size: 256
+  gamma: 0.99
+  net_arch: [128, 128, 128]
+  device: cuda
+outputs:
+  run_dir: runs/gpu_level3
+  checkpoint_dir: checkpoints/gpu_level3
+  model_path: models/gpu_level3_sac.zip

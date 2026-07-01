@@ -1,0 +1,17 @@
+seed: 123
+total_timesteps: 100000
+eval_episodes: 8
+max_steps: 96
+data:
+  preset: smoke
+  cases: data/smoke/manifest.json
+training:
+  algorithm: SAC
+  learning_rate: 0.0003
+  buffer_size: 100000
+  batch_size: 256
+  gamma: 0.99
+  net_arch: [128, 128, 128]
+outputs:
+  run_dir: runs/local_smoke_100k
+  model_path: models/local_smoke_sac_100k.zip
