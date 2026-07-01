@@ -8,7 +8,6 @@ but it is not a Level 3 reproduction of the paper's full meshing pipeline.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from importlib import import_module
 import json
 import math
 from pathlib import Path
@@ -188,60 +187,15 @@ def _local_proxy_mesh(case: MeshCase, action: np.ndarray) -> MeshAttempt:
     return MeshAttempt(valid, quad_count, valid_quad_ratio, mean_quality, min_quality, area_coverage, None if valid else "low_quality_or_coverage")
 
 
-def _external_mesh_attempt(case: MeshCase, action: np.ndarray) -> MeshAttempt | None:
-    """Try the local baseline module without importing it eagerly."""
-
-    try:
-        baseline = import_module("freemesh_rl.baseline")
-    except ModuleNotFoundError:
-        return None
-    runner = (
-        getattr(baseline, "run_baseline_attempt", None)
-        or getattr(baseline, "generate_baseline_mesh", None)
-        or getattr(baseline, "run_grid_baseline", None)
-    )
-    if runner is None:
-        return None
-    try:
-        result = runner(case=case, action=action)
-    except TypeError:
-        resolution = int(np.interp(float(action[0]), [-1.0, 1.0], [4.0, 18.0]).round())
-        offset_x = float(np.interp(float(action[1]), [-1.0, 1.0], [-0.45, 0.45]))
-        offset_y = float(np.interp(float(action[2]), [-1.0, 1.0], [-0.45, 0.45]))
-        result = runner(case.case_id, case.vertices, resolution=resolution, offset_x=offset_x, offset_y=offset_y)
-
-    if isinstance(result, MeshAttempt):
-        return result
-    if hasattr(result, "metrics"):
-        metrics = result.metrics
-        return MeshAttempt(
-            valid=bool(getattr(result, "status", "") in {"complete", "partial"} and metrics.quad_count > 0),
-            quad_count=int(metrics.quad_count),
-            valid_quad_ratio=float(metrics.valid_quad_ratio),
-            mean_quality=float(metrics.element_quality_mean),
-            min_quality=float(metrics.element_quality_min),
-            area_coverage=float(metrics.completion_ratio),
-            invalid_reason=None if getattr(result, "status", "") != "failed" else getattr(result, "reason", "failed"),
-        )
-    if not isinstance(result, dict):
-        return None
-
-    return MeshAttempt(
-        valid=bool(result.get("valid", result.get("success", False))),
-        quad_count=int(result.get("quad_count", result.get("num_quads", 0))),
-        valid_quad_ratio=float(result.get("valid_quad_ratio", result.get("quad_ratio", 0.0))),
-        mean_quality=float(result.get("mean_quality", result.get("quality", 0.0))),
-        min_quality=float(result.get("min_quality", result.get("mean_quality", 0.0))),
-        area_coverage=float(result.get("area_coverage", result.get("coverage", 0.0))),
-        invalid_reason=result.get("invalid_reason"),
-    )
-
-
 def run_mesh_attempt(case: MeshCase, action: np.ndarray) -> MeshAttempt:
-    """Run a real simplified mesh attempt for the current case/action."""
+    """Run the fast Level 2 proxy mesh attempt for the current case/action.
 
-    external = _external_mesh_attempt(case, action)
-    return external if external is not None else _local_proxy_mesh(case, action)
+    The explicit baseline CLI performs Shapely-based contained-grid evaluation.
+    The RL environment keeps a faster proxy in the step loop so SAC smoke runs
+    remain feasible on CPU.
+    """
+
+    return _local_proxy_mesh(case, action)
 
 
 def proxy_reward(metrics: MeshAttempt, completed: bool) -> float:

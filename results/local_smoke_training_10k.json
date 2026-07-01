@@ -1,0 +1,56 @@
+{
+  "config": {
+    "data": {
+      "cases": "data/smoke/manifest.json",
+      "preset": "smoke"
+    },
+    "eval_episodes": 8,
+    "max_steps": 96,
+    "outputs": {
+      "model_path": "models/local_smoke_sac.zip",
+      "run_dir": "runs/local_smoke"
+    },
+    "seed": 123,
+    "total_timesteps": 10000,
+    "training": {
+      "algorithm": "SAC",
+      "batch_size": 128,
+      "buffer_size": 50000,
+      "gamma": 0.99,
+      "learning_rate": 0.0003,
+      "net_arch": [
+        128,
+        128,
+        128
+      ]
+    }
+  },
+  "dependency_status": {
+    "device": "cpu",
+    "gymnasium": true,
+    "stable_baselines3": true,
+    "torch": true
+  },
+  "elapsed_seconds": 122.66936966599314,
+  "evaluation_summary": {
+    "episode_rewards": [
+      5.8984736680984495,
+      5.960034325878052,
+      5.8984736680984495,
+      5.944142230003073,
+      5.939990231516028,
+      5.912240771951503,
+      5.976889712354281,
+      5.919358977129613
+    ],
+    "episodes": 8,
+    "mean_best_quality": 0.9716672028112507,
+    "mean_reward": 5.931200448128681,
+    "success_rate": 1.0
+  },
+  "mode": "train_smoke",
+  "model_path": "models/local_smoke_sac.zip",
+  "started_at_unix": 1782899990.814625,
+  "status": "completed",
+  "timesteps": 10000
+}
