@@ -8,6 +8,7 @@ models/
 tensorboard/
 wandb/
 outputs/raw/
+outputs/
 references/papers/*.pdf
 references/papers/*-zh/
 tmp/
@@ -26,6 +27,7 @@ __pycache__/
 htmlcov/
 .venv/
 venv/
+.baoyu-skills/
 dist/
 build/
 *.egg-info/
