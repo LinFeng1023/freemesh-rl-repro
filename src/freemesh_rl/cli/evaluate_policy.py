@@ -25,6 +25,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", required=True, help="YAML config path")
     parser.add_argument("--model-path", "--model", dest="model_path", help="Saved Stable-Baselines3 SAC model path")
+    parser.add_argument("--cases", help="Override config data.cases manifest path")
     parser.add_argument("--random-policy", action="store_true", help="Evaluate random actions instead of a saved model")
     parser.add_argument("--episodes", type=int, help="Override evaluation episode count")
     parser.add_argument("--out-dir", "--out", dest="out_dir", help="Override output directory")
@@ -35,6 +36,8 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     start = time.perf_counter()
     config = load_config(args.config)
+    if args.cases:
+        config.setdefault("data", {})["cases"] = args.cases
     outputs = config.get("outputs", {}) or {}
     out_dir = Path(args.out_dir or outputs.get("run_dir", "runs/local_smoke"))
     episodes = int(args.episodes or config.get("eval_episodes", 4))
