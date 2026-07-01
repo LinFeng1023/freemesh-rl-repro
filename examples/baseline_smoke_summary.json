@@ -1,0 +1,9 @@
+{
+  "case_count": 30,
+  "completion_rate": 0.0,
+  "mean_completion_ratio": 0.588441932511162,
+  "mean_valid_quad_ratio": 1.0,
+  "mean_element_quality": 0.9999999999999999,
+  "total_invalid_count": 0,
+  "total_runtime_seconds": 0.560763824993046
+}
