@@ -64,7 +64,7 @@ def load_config(path: str | Path) -> dict[str, Any]:
 
 def make_env_from_config(config: dict[str, Any]) -> FreeMeshEnv:
     data_cfg = config.get("data", {}) or {}
-    manifest = data_cfg.get("cases")
+    manifest = data_cfg.get("cases") or data_cfg.get("train_manifest") or data_cfg.get("eval_manifest")
     max_steps = int(config.get("max_steps", 8))
     return FreeMeshEnv(cases=load_cases(manifest), max_steps=max_steps)
 
