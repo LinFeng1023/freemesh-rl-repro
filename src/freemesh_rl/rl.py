@@ -148,6 +148,7 @@ def train_sac_smoke(config: dict[str, Any]) -> tuple[Any, dict[str, Any]]:
         policy_kwargs=policy_kwargs or None,
         verbose=0,
         seed=int(config.get("seed", 0)),
+        device=str(training.get("device", "auto")),
     )
     total_timesteps = int(config.get("total_timesteps", 1000))
     model.learn(total_timesteps=total_timesteps, progress_bar=False)
